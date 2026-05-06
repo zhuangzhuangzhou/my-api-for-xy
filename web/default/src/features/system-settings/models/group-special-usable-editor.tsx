@@ -27,6 +27,9 @@ import { StatusBadge } from '@/components/status-badge'
 const OP_ADD = 'add' as const
 const OP_REMOVE = 'remove' as const
 const OP_APPEND = 'append' as const
+const sectionCardClassName =
+  'relative shadow-sm ring-0 before:pointer-events-none before:absolute before:inset-0 before:rounded-xl before:border before:border-border/90'
+const sectionHeaderClassName = 'border-b bg-muted/20'
 
 type OpType = typeof OP_ADD | typeof OP_REMOVE | typeof OP_APPEND
 
@@ -133,14 +136,16 @@ function GroupSection(props: GroupSectionProps) {
       <div className='rounded-lg border'>
         <div className='flex items-center justify-between p-3'>
           <div className='flex items-center gap-2'>
-            <CollapsibleTrigger asChild>
-              <Button variant='ghost' size='sm' className='h-6 w-6 p-0'>
-                {open ? (
-                  <ChevronUp className='h-4 w-4' />
-                ) : (
-                  <ChevronDown className='h-4 w-4' />
-                )}
-              </Button>
+            <CollapsibleTrigger
+              render={
+                <Button variant='ghost' size='sm' className='h-6 w-6 p-0' />
+              }
+            >
+              {open ? (
+                <ChevronUp className='h-4 w-4' />
+              ) : (
+                <ChevronDown className='h-4 w-4' />
+              )}
             </CollapsibleTrigger>
             <span className='font-semibold'>{props.groupName}</span>
             <StatusBadge variant='neutral' copyable={false}>
@@ -172,7 +177,9 @@ function GroupSection(props: GroupSectionProps) {
               <div key={rule._id} className='flex items-center gap-2'>
                 <Select
                   value={rule.op}
-                  onValueChange={(v) => props.onUpdate(rule._id, 'op', v)}
+                  onValueChange={(v) =>
+                    v !== null && props.onUpdate(rule._id, 'op', v)
+                  }
                 >
                   <SelectTrigger className='w-[130px]'>
                     <SelectValue>
@@ -340,8 +347,8 @@ export function GroupSpecialUsableRulesEditor(
   }, [rules])
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className={sectionCardClassName}>
+      <CardHeader className={sectionHeaderClassName}>
         <CardTitle>{t('Special usable group rules')}</CardTitle>
         <CardDescription>
           {t(
